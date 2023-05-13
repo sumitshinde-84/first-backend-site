@@ -1,35 +1,24 @@
-const http = require("http");
-const fs = require("fs");
+const express = require('express');
+const app = express();
+const path = require('path');
+const port = 5500;
 
-http
-  .createServer(function (req, res) {
-    if (req.url == "/") {
-      fs.readFile("index.html", function (err, data) {
-        if (err) throw err;
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(data);
-        return res.end;
-      });
-    } else if (req.url == "/about") {
-      fs.readFile("about.html", function (err, data) {
-        if (err) throw err;
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(data);
-        return res.end;
-      });
-    } else if (req.url == "/contact") {
-      fs.readFile("contact.html", function (err, data) {
-        if (err) throw err;
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(data);
-        return res.end;
-      });
-    } else {
-      fs.readFile("404.html", function (err, data) {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(data);
-        return res.end;
-      });
-    }
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/about',function(req,res){
+res.sendFile(path.join(__dirname,'about.html'))
+})
+
+app.get('/contact',function(req,res){
+  res.sendFile(path.join(__dirname,'contact.html'))
   })
-  .listen(1623);
+
+  app.use(function(req, res, next) {
+    res.status(404).sendFile(path.join(__dirname,'404.html'));
+  });
+
+app.listen(port, () => {
+  console.log('Server listening on port ' + port);
+});
